@@ -1,0 +1,58 @@
+services:
+  bates-advisor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bates-advisor-agent
+
+    # Environment variables
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash-exp}
+
+    # Mount volumes for persistence
+    volumes:
+      # Vector database (required - contains ingested PDF data)
+      - ./chroma_db:/app/chroma_db:ro
+      # Logs (optional - for debugging)
+      - ./logs:/app/logs
+      # Session memory (optional - for persistence across restarts)
+      - ./memory:/app/memory
+      # Health reports (optional)
+      - ./health_reports:/app/health_reports
+
+    # Interactive mode for chat interface
+    stdin_open: true
+    tty: true
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Resource limits (optional)
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+
+  # Health check service (optional - run on demand)
+  health-check:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bates-advisor-health
+
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash-exp}
+
+    volumes:
+      - ./chroma_db:/app/chroma_db:ro
+      - ./health_reports:/app/health_reports
+
+    command: [ "python", "health_check.py" ]
+
+    # Only run when explicitly started
+    profiles:
+      - health

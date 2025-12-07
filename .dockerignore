@@ -1,0 +1,45 @@
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Logs (will be created fresh in container)
+logs/*.jsonl
+
+# Session memory (will be created fresh)
+memory/*.json
+
+# Health reports (will be created fresh)
+health_reports/*.json
+
+# Environment file (pass via docker run -e or docker-compose)
+.env
+
+# Documentation
+*.md
+!README.md
+
+# Tests
+tests/
+*_test.py
+test_*.py
+
+# OS files
+.DS_Store
+Thumbs.db

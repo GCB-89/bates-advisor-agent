@@ -1,6 +1,21 @@
 # 🎓 Bates Technical College - Multi-Agent Student Advisor System
 
+[![GitHub](https://img.shields.io/badge/GitHub-GCB--89%2Fbates--advisor--agent-blue?logo=github)](https://github.com/GCB-89/bates-advisor-agent)
+
 A production-grade, multi-agent AI system that provides comprehensive student advising for Bates Technical College using RAG, parallel agents, custom tools, memory, and full observability.
+
+## 📥 Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/GCB-89/bates-advisor-agent.git
+cd bates-advisor-agent
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment (see Setup Instructions below)
+```
 
 ## 🎯 What This System Does
 
@@ -23,7 +38,11 @@ bates_advisor_agent/
 ├── main.py                       # Main entry point
 ├── agent.py                      # Agent interface module
 ├── health_check.py               # System health diagnostics
-├── .env                          # Environment variables
+├── Dockerfile                    # Docker container definition
+├── docker-compose.yml            # Docker Compose configuration
+├── .dockerignore                 # Docker build exclusions
+├── .gitignore                    # Git exclusions
+├── .env                          # Environment variables (create this)
 ├── data/                         # PDF storage
 │   └── BatesTech2025-26Catalog.pdf
 ├── src/

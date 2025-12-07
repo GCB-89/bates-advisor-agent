@@ -23,7 +23,7 @@ pip install -r requirements.txt
 - **Intelligent Routing**: Questions automatically routed to the right expert (with caching)
 - **Parallel Execution**: Multiple agents run simultaneously for complex queries
 - **Session Memory**: Remembers student context across conversations
-- **Custom Tools**: Course search and program finder
+- **Streamlit Web UI**: Modern chat interface with Bates Tech branding
 - **Full Observability**: Logging, tracing, and metrics for every interaction
 - **RAG-Powered**: Searches through 459-page course catalog intelligently
 - **Adaptive Retrieval**: Smart context retrieval based on query complexity
@@ -35,7 +35,8 @@ pip install -r requirements.txt
 bates_advisor_agent/
 ├── README.md                      # This file
 ├── requirements.txt               # Python dependencies
-├── main.py                       # Main entry point
+├── main.py                       # CLI entry point
+├── streamlit_app.py              # Web UI (Streamlit)
 ├── agent.py                      # Agent interface module
 ├── health_check.py               # System health diagnostics
 ├── Dockerfile                    # Docker container definition
@@ -105,6 +106,17 @@ This takes 2-5 minutes and only needs to be done once!
 
 ### Step 5: Start Chatting!
 
+**Option A: Web UI (Recommended)**
+```bash
+streamlit run streamlit_app.py
+```
+Opens a modern chat interface at http://localhost:8501 with:
+- Bates Tech branding (navy & gold theme)
+- Chat bubble interface
+- FAQ sidebar with common questions
+- Dark mode for easy reading
+
+**Option B: Command Line**
 ```bash
 python main.py
 ```
@@ -255,8 +267,8 @@ docker run --rm \
 ## 🔧 Customization Ideas
 
 - Add more documents (student handbook, schedules, etc.)
-- Connect to a web interface with Streamlit
-- Deploy to cloud (AWS Lambda, Azure Functions)
+- Deploy to cloud (AWS, Azure, GCP)
+- Embed chat widget on school website
 - Create specialized agents (enrollment advisor, career counselor, etc.)
 
 ## 📝 Example Questions to Try

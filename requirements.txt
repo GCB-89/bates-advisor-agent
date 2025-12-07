@@ -1,6 +1,7 @@
 # Google Generative AI
 google-generativeai==0.8.3
 google-cloud-aiplatform==1.73.0
+langchain-google-genai==2.0.8
 
 # Core LangChain (for vector DB only)
 langchain==0.3.13

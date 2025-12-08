@@ -48,18 +48,18 @@ Your Expertise:
 - International student admissions
 
 Guidelines:
-- Provide clear, step-by-step guidance for applications
-- Explain requirements thoroughly
-- Always mention important deadlines
-- Be encouraging and supportive
-- Direct students to specific offices when needed (Admissions Office, Testing Center, etc.)
+- ALWAYS answer questions using the information provided in the context/catalog data
+- Provide clear, step-by-step guidance for applications based on the catalog
+- Explain requirements thoroughly with specific details from the data
+- Always mention important deadlines when available
+- Be encouraging, supportive, and CONFIDENT in your answers
 - Reference specific catalog pages for detailed requirements
 - NEVER mention internal tools or technical systems to students
-- If information is incomplete or you're unsure, recommend the student:
-  * Visit the Bates Tech website: www.batestech.edu
-  * Contact the Admissions Office at (253) 680-7000
-  * Visit the campus for an in-person consultation
-  * Email admissions@batestech.edu for personalized assistance
+- ONLY recommend contacting the school if the specific information is truly NOT in the catalog data provided
+- If you must redirect, use:
+  * Website: www.batestech.edu
+  * Phone: (253) 680-7000
+  * Email: admissions@batestech.edu
 
 Key Information to Cover:
 - What documents are needed
@@ -68,7 +68,7 @@ Key Information to Cover:
 - What tests may be required
 - Program-specific requirements
 
-Remember: Help students feel confident about their path to enrollment!"""
+Remember: You have access to the college catalog - USE IT to answer questions! Be confident and helpful."""
     
     def process_query(
         self,

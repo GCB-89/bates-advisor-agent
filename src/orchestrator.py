@@ -117,6 +117,25 @@ class MultiAgentOrchestrator:
             routing_result["reasoning"]
         )
         
+        # Handle general/greeting queries that don't need RAG agents
+        if "general" in selected_agents and len(selected_agents) == 1:
+            general_response = self._handle_general_query(query)
+            self.session_manager.add_message(session_id, "user", query)
+            self.session_manager.add_message(session_id, "assistant", general_response)
+            end_time = time.time()
+            return {
+                "response": general_response,
+                "sources": [],
+                "agents_used": ["General Advisor"],
+                "routing_reasoning": routing_result["reasoning"],
+                "execution_time": end_time - start_time
+            }
+        
+        # Filter out "general" from agents if mixed with other agents
+        selected_agents = [a for a in selected_agents if a != "general"]
+        if not selected_agents:
+            selected_agents = ["program"]  # Default fallback
+        
         # Step 3: Execute agents in PARALLEL for better performance
         agent_responses = []
         valid_agents = [(agent_id, self.agents[agent_id]) for agent_id in selected_agents if agent_id in self.agents]
@@ -196,6 +215,58 @@ class MultiAgentOrchestrator:
             "routing_reasoning": routing_result["reasoning"],
             "execution_time": total_time
         }
+    
+    def _handle_general_query(self, query: str) -> str:
+        """
+        Handle general/greeting queries that don't need RAG.
+        
+        Args:
+            query: User's general question
+            
+        Returns:
+            Friendly response guiding user to ask specific questions
+        """
+        query_lower = query.lower()
+        
+        # Check for different types of general queries
+        if any(word in query_lower for word in ["hello", "hi", "hey", "greetings"]):
+            return """Hello! Welcome to the Bates Technical College Student Advisor. I'm here to help you with:
+
+* **Programs & Courses** - Learn about our certificates, degrees, and training programs
+* **Admissions** - Application process, requirements, and enrollment steps
+* **Financial Aid** - Tuition costs, FAFSA, scholarships, and payment options
+
+What would you like to know about? Feel free to ask me anything!"""
+        
+        elif any(phrase in query_lower for phrase in ["can you help", "help me", "assist", "what can you do"]):
+            return """Of course! I can definitely help. To best assist you, could you please tell me what you need help with? For example, are you interested in:
+
+* Learning about a specific program at Bates Tech?
+* Understanding the admissions or enrollment process?
+* Exploring financial aid, scholarships, or tuition costs?
+
+Just ask your question and I'll do my best to provide helpful information!"""
+        
+        elif any(phrase in query_lower for phrase in ["thank", "thanks", "appreciate"]):
+            return """You're welcome! If you have any more questions about Bates Technical College, feel free to ask. I'm happy to help with programs, admissions, or financial aid questions."""
+        
+        elif any(phrase in query_lower for phrase in ["who are you", "what are you"]):
+            return """I'm the Bates Technical College Student Advisor, an AI assistant designed to help prospective and current students with questions about:
+
+* **Programs** - Over 30 professional-technical programs
+* **Admissions** - How to apply and enroll
+* **Financial Aid** - Funding your education
+
+How can I help you today?"""
+        
+        else:
+            return """I'd be happy to help! I'm the Bates Technical College Student Advisor. I can answer questions about:
+
+* Programs and courses offered at Bates Tech
+* Admissions requirements and the application process
+* Financial aid, scholarships, and tuition
+
+What would you like to know?"""
     
     def _synthesize_responses(self, responses: List[Dict]) -> tuple:
         """

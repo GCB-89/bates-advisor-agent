@@ -70,6 +70,13 @@ class RouterAgent:
                     "scholarship", "grant", "loan", "FAFSA", "payment",
                     "afford", "expensive", "funding", "money"
                 ]
+            },
+            "general": {
+                "name": "General Advisor",
+                "expertise": [
+                    "help", "hello", "hi", "hey", "thanks", "thank you",
+                    "who are you", "what can you do", "assist", "support"
+                ]
             }
         }
     
@@ -90,6 +97,7 @@ Available Advisors:
 1. Program Advisor - Courses, programs, curriculum, requirements, degrees
 2. Admissions Advisor - Admission requirements, applications, enrollment, deadlines
 3. Financial Aid Advisor - Tuition, costs, financial aid, scholarships, payments
+4. General Advisor - Greetings, general help, unclear questions, "who are you", "can you help me"
 
 Student Question: "{query}"
 
@@ -98,6 +106,7 @@ Rules:
 - Use Program Advisor for course/program questions
 - Use Admissions Advisor for application/enrollment questions
 - Use Financial Advisor for cost/aid questions
+- Use General Advisor for greetings, unclear questions, or "can you help me" type questions
 - Complex questions may need multiple advisors
 
 Respond in this exact format:
@@ -116,6 +125,14 @@ REASONING: Question covers both application process and costs
 Q: "What are the admission requirements for dental hygiene?"
 AGENTS: [admissions]
 REASONING: Question about admission requirements
+
+Q: "Can you help me?"
+AGENTS: [general]
+REASONING: General greeting asking for assistance
+
+Q: "Hello, what can you do?"
+AGENTS: [general]
+REASONING: Greeting and general inquiry about capabilities
 
 Now analyze the student's question:"""
 

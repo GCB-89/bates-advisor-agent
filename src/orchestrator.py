@@ -118,11 +118,13 @@ class MultiAgentOrchestrator:
         )
         
         # Handle general/greeting queries that don't need RAG agents
-        if "general" in selected_agents and len(selected_agents) == 1:
+        if "general" in selected_agents:
             general_response = self._handle_general_query(query)
             self.session_manager.add_message(session_id, "user", query)
             self.session_manager.add_message(session_id, "assistant", general_response)
+            self.logger.log_memory_update(session_id, "conversation_history", {"messages_added": 2})
             end_time = time.time()
+            self.logger.log_response(session_id, general_response, end_time - start_time, 0)
             return {
                 "response": general_response,
                 "sources": [],
@@ -130,11 +132,6 @@ class MultiAgentOrchestrator:
                 "routing_reasoning": routing_result["reasoning"],
                 "execution_time": end_time - start_time
             }
-        
-        # Filter out "general" from agents if mixed with other agents
-        selected_agents = [a for a in selected_agents if a != "general"]
-        if not selected_agents:
-            selected_agents = ["program"]  # Default fallback
         
         # Step 3: Execute agents in PARALLEL for better performance
         agent_responses = []
@@ -217,54 +214,39 @@ class MultiAgentOrchestrator:
         }
     
     def _handle_general_query(self, query: str) -> str:
-        """
-        Handle general/greeting queries that don't need RAG.
-        
-        Args:
-            query: User's general question
-            
-        Returns:
-            Friendly response guiding user to ask specific questions
-        """
+        """Handle general/greeting queries that don't need RAG."""
         query_lower = query.lower()
         
-        # Check for different types of general queries
         if any(word in query_lower for word in ["hello", "hi", "hey", "greetings"]):
             return """Hello! Welcome to the Bates Technical College Student Advisor. I'm here to help you with:
 
 * **Programs & Courses** - Learn about our certificates, degrees, and training programs
-* **Admissions** - Application process, requirements, and enrollment steps
+* **Admissions** - Application process, requirements, and enrollment steps  
 * **Financial Aid** - Tuition costs, FAFSA, scholarships, and payment options
 
-What would you like to know about? Feel free to ask me anything!"""
+What would you like to know about?"""
         
-        elif any(phrase in query_lower for phrase in ["can you help", "help me", "assist", "what can you do"]):
-            return """Of course! I can definitely help. To best assist you, could you please tell me what you need help with? For example, are you interested in:
+        elif any(phrase in query_lower for phrase in ["can you help", "help me", "assist", "what can you"]):
+            return """Of course! I can help you with information about Bates Technical College. Just ask me about:
 
-* Learning about a specific program at Bates Tech?
-* Understanding the admissions or enrollment process?
-* Exploring financial aid, scholarships, or tuition costs?
+* **Programs** - What programs are offered, course requirements, schedules
+* **Admissions** - How to apply, deadlines, requirements
+* **Financial Aid** - Tuition costs, scholarships, FAFSA, payment plans
 
-Just ask your question and I'll do my best to provide helpful information!"""
+What would you like to know?"""
         
-        elif any(phrase in query_lower for phrase in ["thank", "thanks", "appreciate"]):
-            return """You're welcome! If you have any more questions about Bates Technical College, feel free to ask. I'm happy to help with programs, admissions, or financial aid questions."""
+        elif any(phrase in query_lower for phrase in ["thank", "thanks"]):
+            return """You're welcome! Feel free to ask if you have more questions about Bates Technical College."""
         
         elif any(phrase in query_lower for phrase in ["who are you", "what are you"]):
-            return """I'm the Bates Technical College Student Advisor, an AI assistant designed to help prospective and current students with questions about:
-
-* **Programs** - Over 30 professional-technical programs
-* **Admissions** - How to apply and enroll
-* **Financial Aid** - Funding your education
-
-How can I help you today?"""
+            return """I'm the Bates Technical College Student Advisor, an AI assistant here to help with questions about programs, admissions, and financial aid. How can I help you today?"""
         
         else:
-            return """I'd be happy to help! I'm the Bates Technical College Student Advisor. I can answer questions about:
+            return """I'm here to help! I can answer questions about:
 
-* Programs and courses offered at Bates Tech
-* Admissions requirements and the application process
-* Financial aid, scholarships, and tuition
+* Programs and courses at Bates Technical College
+* Admissions requirements and how to apply
+* Financial aid, scholarships, and tuition costs
 
 What would you like to know?"""
     

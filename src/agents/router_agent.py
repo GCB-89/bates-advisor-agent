@@ -74,8 +74,8 @@ class RouterAgent:
             "general": {
                 "name": "General Advisor",
                 "expertise": [
-                    "help", "hello", "hi", "hey", "thanks", "thank you",
-                    "who are you", "what can you do", "assist", "support"
+                    "hello", "hi", "hey", "help", "assist", "thanks",
+                    "thank you", "what can you", "who are you"
                 ]
             }
         }
@@ -97,7 +97,6 @@ Available Advisors:
 1. Program Advisor - Courses, programs, curriculum, requirements, degrees
 2. Admissions Advisor - Admission requirements, applications, enrollment, deadlines
 3. Financial Aid Advisor - Tuition, costs, financial aid, scholarships, payments
-4. General Advisor - Greetings, general help, unclear questions, "who are you", "can you help me"
 
 Student Question: "{query}"
 
@@ -106,7 +105,6 @@ Rules:
 - Use Program Advisor for course/program questions
 - Use Admissions Advisor for application/enrollment questions
 - Use Financial Advisor for cost/aid questions
-- Use General Advisor for greetings, unclear questions, or "can you help me" type questions
 - Complex questions may need multiple advisors
 
 Respond in this exact format:
@@ -126,14 +124,6 @@ Q: "What are the admission requirements for dental hygiene?"
 AGENTS: [admissions]
 REASONING: Question about admission requirements
 
-Q: "Can you help me?"
-AGENTS: [general]
-REASONING: General greeting asking for assistance
-
-Q: "Hello, what can you do?"
-AGENTS: [general]
-REASONING: Greeting and general inquiry about capabilities
-
 Now analyze the student's question:"""
 
         # Get LLM classification
@@ -149,14 +139,17 @@ Now analyze the student's question:"""
                 # Extract agent names
                 agents_str = line.split('AGENTS:')[1].strip()
                 agents_str = agents_str.strip('[]')
-                selected_agents = [a.strip() for a in agents_str.split(',')]
+                selected_agents = [a.strip() for a in agents_str.split(',') if a.strip()]
             elif line.startswith('REASONING:'):
                 reasoning = line.split('REASONING:')[1].strip()
         
-        # Fallback to keyword matching if parsing fails
+        # Filter out empty strings and invalid agents
+        selected_agents = [a for a in selected_agents if a and a in self.agent_registry]
+        
+        # Fallback to keyword matching if parsing fails or no valid agents
         if not selected_agents:
             selected_agents = self._keyword_based_routing(query)
-            reasoning = "Fallback keyword-based routing"
+            reasoning = reasoning or "Fallback keyword-based routing"
         
         return {
             "agents": selected_agents,
